@@ -1,5 +1,9 @@
 
+'''WAY AHEAD
 
+we should have every star calculate the number of adjacent stars
+if we then sum this number, we could create the top 5 times that had the
+most adjacenies this would probably indicate when there was a message?'''
 
 class Star(object):
     # represets each star
