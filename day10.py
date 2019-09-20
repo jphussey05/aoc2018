@@ -34,11 +34,19 @@ class Star(object):
             f'{self.y_velocity})'
         )
 
-def find_max_xy():
+def find_max_xy(stars):
     '''
     Take in all of the points to determine max xy for the grid size
     '''
-    pass
+    max_x = 0
+    max_y = 0
+
+    for star in stars:
+        max_x = max(max_x, abs(star.cur_x))
+        max_y = max(max_y, abs(star.cur_y))
+    
+    
+    return (max_x, max_y)
 
 def parse_start_points(contents):
     '''
@@ -59,10 +67,23 @@ def parse_start_points(contents):
 
 
 
+def print_star_map(stars):
+    max_x, max_y = find_max_xy(stars)
+    
+    star_map = [[' ' for _ in range(max_x+1)] for _ in range(max_y+1)]
+
+    for star in stars:
+        star_map[star.cur_y][star.cur_x] = '*'
+
+    for row in star_map:
+        print(''.join(row))
 
 with open('day10.txt') as fin:
     contents = fin.readlines()
 
 stars = parse_start_points(contents)
+
 for star in stars:
-    print(star)
+    star.move(3)
+print_star_map(stars)
+
