@@ -73,6 +73,10 @@ def parse_start_points(filename):
 
 
 def create_star_map(stars):
+    '''
+    Takes a reference to the stars list and returns a list of lists
+    that represents the star field
+    '''
     max_x, max_y = find_max_xy(stars)
     
     star_map = [[' ' for _ in range(max_x+1)] for _ in range(max_y+1)]
@@ -89,11 +93,24 @@ def print_star_map(star_map):
 
 
 def advance_stars(stars, step):
+    '''
+    Invokes the star object's move method for every star in the list
+    this has the effect of moving all stars the same number of steps
+    when called from main in a loop.
+
+    No object is returned as stars is a reference to the list in the 
+    namespace
+    '''
     for star in stars:
         star.move(step)
 
 
 def count_all_neighbors(stars, star_map):
+    '''
+    An inelegant method of iterating through all stars in their current positions
+    and then testing if the adjacent spots in the star map contain an '*' 
+    representing a star
+    '''
     neighbor_sum = 0
 
     for star in stars:
