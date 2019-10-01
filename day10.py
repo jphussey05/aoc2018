@@ -23,6 +23,7 @@ class Star(object):
         self.cur_x += (self.x_velocity * step)
         self.cur_y += (self.y_velocity * step)
 
+
     def __str__(self):
         return f'Star at {self.cur_x}, {self.cur_y} w/ V: {self.x_velocity}, {self.y_velocity}'
 
@@ -48,11 +49,15 @@ def find_max_xy(stars):
     
     return (max_x, max_y)
 
-def parse_start_points(contents):
+def parse_start_points(filename):
     '''
     The initial strip of the ingested day10.txt file that has all of the points
     creates a list of Star objects
     '''
+
+    with open(filename) as fin:
+        contents = fin.readlines()
+
     stars = []
     for line in contents:
         start, velocity = line.split(' velocity=')
@@ -67,7 +72,7 @@ def parse_start_points(contents):
 
 
 
-def print_star_map(stars):
+def create_star_map(stars):
     max_x, max_y = find_max_xy(stars)
     
     star_map = [[' ' for _ in range(max_x+1)] for _ in range(max_y+1)]
@@ -75,15 +80,70 @@ def print_star_map(stars):
     for star in stars:
         star_map[star.cur_y][star.cur_x] = '*'
 
+    return star_map
+
+
+def print_star_map(star_map):
     for row in star_map:
         print(''.join(row))
 
-with open('day10.txt') as fin:
-    contents = fin.readlines()
 
-stars = parse_start_points(contents)
+def advance_stars(stars, step):
+    for star in stars:
+        star.move(step)
 
-for star in stars:
-    star.move(3)
-print_star_map(stars)
+
+def count_all_neighbors(stars, star_map):
+    neighbor_sum = 0
+
+    for star in stars:
+        try: # right of the star
+            if star_map[star.cur_y][star.cur_x + 1] == '*':
+                neighbor_sum += 1
+        except IndexError:
+            pass
+
+        try: # left of the star
+            if star_map[star.cur_y][star.cur_x - 1] == '*':
+                neighbor_sum += 1
+        except IndexError:
+            pass
+        
+        try: # up from the star
+            if star_map[star.cur_y - 1][star.cur_x] == '*':
+                neighbor_sum += 1
+        except IndexError:
+            pass
+        
+        try: #down from the star
+            if star_map[star.cur_y + 1][star.cur_x] == '*':
+                neighbor_sum += 1
+        except IndexError:
+            pass
+
+
+    return neighbor_sum
+
+#
+# main 
+#
+
+
+
+stars = parse_start_points('day10.txt')
+
+max_neighbor_count = 0
+max_neighbor_step = 0
+
+
+for x in range(4):
+    advance_stars(stars, 1)
+    star_map = create_star_map(stars)
+
+    print_star_map(star_map)
+
+    current_neighbor_count = count_all_neighbors(stars, star_map)
+    print(current_neighbor_count)
+
+
 
