@@ -5,6 +5,10 @@ we should have every star calculate the number of adjacent stars
 if we then sum this number, we could create the top 5 times that had the
 most adjacenies this would probably indicate when there was a message?'''
 
+import numpy as np
+import scipy.misc as smp
+from PIL import Image
+
 class Star(object):
     # represets each star
     # has start point, which is used only to find max size of grid
@@ -78,11 +82,14 @@ def create_star_map(stars):
     that represents the star field
     '''
     max_x, max_y = find_max_xy(stars)
-    
-    star_map = [[' ' for _ in range(max_x+1)] for _ in range(max_y+1)]
+    # print(f'creating map with {max_x} and {max_y}')
 
+    # star_map = [[' ' for _ in range(max_x+1)] for _ in range(max_y+1)]
+    star_map = np.zeros((max_y + 1, max_x + 1), dtype=np.dtype('uint8'))
+
+    # print(f'map created')
     for star in stars:
-        star_map[star.cur_y][star.cur_x] = '*'
+        star_map[star.cur_y][star.cur_x] = 255
 
     return star_map
 
@@ -109,31 +116,33 @@ def count_all_neighbors(stars, star_map):
     '''
     An inelegant method of iterating through all stars in their current positions
     and then testing if the adjacent spots in the star map contain an '*' 
-    representing a star
+    representing a star\]=['; vc]
     '''
     neighbor_sum = 0
 
+    # print('Counting neighbors')
+
     for star in stars:
         try: # right of the star
-            if star_map[star.cur_y][star.cur_x + 1] == '*':
+            if star_map[star.cur_y][star.cur_x + 1] == 255:
                 neighbor_sum += 1
         except IndexError:
             pass
 
         try: # left of the star
-            if star_map[star.cur_y][star.cur_x - 1] == '*':
+            if star_map[star.cur_y][star.cur_x - 1] == 255:
                 neighbor_sum += 1
         except IndexError:
             pass
         
         try: # up from the star
-            if star_map[star.cur_y - 1][star.cur_x] == '*':
+            if star_map[star.cur_y - 1][star.cur_x] == 255:
                 neighbor_sum += 1
         except IndexError:
             pass
         
         try: #down from the star
-            if star_map[star.cur_y + 1][star.cur_x] == '*':
+            if star_map[star.cur_y + 1][star.cur_x] == 255:
                 neighbor_sum += 1
         except IndexError:
             pass
@@ -153,14 +162,24 @@ max_neighbor_count = 0
 max_neighbor_step = 0
 
 
-for x in range(4):
+for x in range(20000):
+    # print('advancing stars')
     advance_stars(stars, 1)
+    # print('creating map')
     star_map = create_star_map(stars)
 
-    print_star_map(star_map)
+    # print_star_map(star_map)
 
+    # print('counting neighbors')
     current_neighbor_count = count_all_neighbors(stars, star_map)
-    print(current_neighbor_count)
-
-
-
+    if current_neighbor_count > max_neighbor_count:
+        max_neighbor_count = current_neighbor_count
+        max_neighbor_step = x
+        try:
+            img = Image.fromarray(star_map, mode='L').convert('1')
+        except MemoryError:
+            print(f'Tried to create image at step {x} with count {current_neighbor_count}')
+            
+img.save('test.jpg')        
+print(f'The max count was {max_neighbor_count} at {max_neighbor_step}')
+# print(star_map)
