@@ -1,10 +1,3 @@
-
-'''WAY AHEAD
-
-we should have every star calculate the number of adjacent stars
-if we then sum this number, we could create the top 5 times that had the
-most adjacenies this would probably indicate when there was a message?'''
-
 import numpy as np
 import scipy.misc as smp
 from PIL import Image
@@ -82,12 +75,9 @@ def create_star_map(stars):
     that represents the star field
     '''
     max_x, max_y = find_max_xy(stars)
-    # print(f'creating map with {max_x} and {max_y}')
 
-    # star_map = [[' ' for _ in range(max_x+1)] for _ in range(max_y+1)]
     star_map = np.zeros((max_y + 1, max_x + 1), dtype=np.dtype('uint8'))
 
-    # print(f'map created')
     for star in stars:
         star_map[star.cur_y][star.cur_x] = 255
 
@@ -119,8 +109,6 @@ def count_all_neighbors(stars, star_map):
     representing a star\]=['; vc]
     '''
     neighbor_sum = 0
-
-    # print('Counting neighbors')
 
     for star in stars:
         try: # right of the star
@@ -154,8 +142,6 @@ def count_all_neighbors(stars, star_map):
 # main 
 #
 
-
-
 stars = parse_start_points('day10.txt')
 
 max_neighbor_count = 0
@@ -163,14 +149,9 @@ max_neighbor_step = 0
 
 
 for x in range(20000):
-    # print('advancing stars')
     advance_stars(stars, 1)
-    # print('creating map')
     star_map = create_star_map(stars)
 
-    # print_star_map(star_map)
-
-    # print('counting neighbors')
     current_neighbor_count = count_all_neighbors(stars, star_map)
     if current_neighbor_count > max_neighbor_count:
         max_neighbor_count = current_neighbor_count
@@ -182,4 +163,3 @@ for x in range(20000):
             
 img.save('test.jpg')        
 print(f'The max count was {max_neighbor_count} at {max_neighbor_step}')
-# print(star_map)
