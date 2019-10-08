@@ -14,6 +14,19 @@ def populate_grid():
             grid[y][x] = power
 
 
+def calc_power(x, y, size):
+    cell_power = grid[y][x]  # center
+    cell_power += grid[y-1][x+1]  # top right
+    cell_power += grid[y][x+1]  # right
+    cell_power += grid[y+1][x+1]  # bot right
+    cell_power += grid[y+1][x]  # bot
+    cell_power += grid[y+1][x-1]  # bot left
+    cell_power += grid[y][x-1]  # left
+    cell_power += grid[y-1][x-1]  # top left
+    cell_power += grid[y-1][x]  # top
+
+    return cell_power
+
 if __name__ == "__main__":
     
     serial = 6042
@@ -29,16 +42,11 @@ if __name__ == "__main__":
     
     for y in range(1, 299):
         for x in range(1,299):
-            cell_power = grid[y][x]  # center
-            cell_power += grid[y-1][x+1]  # top right
-            cell_power += grid[y][x+1]  # right
-            cell_power += grid[y+1][x+1]  # bot right
-            cell_power += grid[y+1][x]  # bot
-            cell_power += grid[y+1][x-1]  # bot left
-            cell_power += grid[y][x-1]  # left
-            cell_power += grid[y-1][x-1]  # top left
-            cell_power += grid[y-1][x]  # top
 
+
+            cell_power = calc_power(x,y, 3)
+
+            # due to 0 indexing, x,y is actually the 'top left' of a 1 index
             if cell_power > high_power:
                 high_power = cell_power
                 high_coords = x,y
