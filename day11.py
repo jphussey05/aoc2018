@@ -19,15 +19,19 @@ def populate_grid():
 
 
 def calc_power(x, y, size):
-    cell_power = grid[y][x]  # center
-    cell_power += grid[y-1][x+1]  # top right
-    cell_power += grid[y][x+1]  # right
-    cell_power += grid[y+1][x+1]  # bot right
-    cell_power += grid[y+1][x]  # bot
-    cell_power += grid[y+1][x-1]  # bot left
-    cell_power += grid[y][x-1]  # left
-    cell_power += grid[y-1][x-1]  # top left
-    cell_power += grid[y-1][x]  # top
+
+    # 0, 0, 3
+    # we need to change this to use top left as origin for the square
+    # then we need to sum from the origin across each row
+    # ex. a 5x5 square would look like...
+    # sum(first row from origin to size, second row, etc.)
+
+    cell_power = 0
+    for offset in range(size):
+        print(f'Point {x},{y}, power={cell_power}, offset={offset}')
+        cell_power += sum(grid[y+offset][x:x+size])
+
+    print(f'Final power for {x},{y} is {cell_power}')
 
     return cell_power
 
@@ -44,14 +48,13 @@ if __name__ == "__main__":
     high_power = 0
     high_coords = 0,0
     
-    for y in range(1, 299):
-        for x in range(1,299):
-
-            print(f'Cell {x}, {y}')
+    for y in range(299):
+        for x in range(299):
 
             # loop again for every possible square size with this origin
             #TODO  which is what...? 
-            cell_power = calc_power(x,y, 3)
+            if x == 0 and y == 0:
+                cell_power = calc_power(x,y, 3)
 
             # due to 0 indexing, x,y is actually the 'top left' of a 1 index
             if cell_power > high_power:
