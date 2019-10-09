@@ -1,3 +1,7 @@
+'''
+new branch for part 2 that I may trash if it doesn't work
+'''
+
 def populate_grid():
     for y, row in enumerate(grid):
         for x, rack_id in enumerate(row):
@@ -43,7 +47,10 @@ if __name__ == "__main__":
     for y in range(1, 299):
         for x in range(1,299):
 
+            print(f'Cell {x}, {y}')
 
+            # loop again for every possible square size with this origin
+            #TODO  which is what...? 
             cell_power = calc_power(x,y, 3)
 
             # due to 0 indexing, x,y is actually the 'top left' of a 1 index
