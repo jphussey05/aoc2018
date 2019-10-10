@@ -20,45 +20,51 @@ def populate_grid():
 
 def calc_power(x, y, size):
 
-    # 0, 0, 3
-    # we need to change this to use top left as origin for the square
-    # then we need to sum from the origin across each row
-    # ex. a 5x5 square would look like...
-    # sum(first row from origin to size, second row, etc.)
+    # x, y is the top left of the square
+    # size is how big the square is
 
-    cell_power = 0
-    for offset in range(size):
-        print(f'Point {x},{y}, power={cell_power}, offset={offset}')
-        cell_power += sum(grid[y+offset][x:x+size])
+    cell_power = grid[y][x]
+    if size > 0:
+        for offset in range(size):
+            # print(f'Point {x},{y}, power={cell_power}, offset={offset}')
+            cell_power += sum(grid[y+offset][x:x+size])
 
-    print(f'Final power for {x},{y} is {cell_power}')
+    # print(f'Final power for {x},{y} with {size}x{size} is {cell_power}')
 
     return cell_power
 
 if __name__ == "__main__":
     
-    serial = 6042
-
+    serial = 42
+    grid_size = 300
     # create 300x300 grid with 'rack id' as each cell value
     # rack id is x coordinate (starts at 1, not 0) plus 10
-    grid = [[x + 11 for x in range(300)] for y in range (300)]
+    grid = [[x + 11 for x in range(grid_size)] for y in range (grid_size)]
 
     populate_grid()
 
     high_power = 0
     high_coords = 0,0
     
-    for y in range(299):
-        for x in range(299):
+    for y in range(grid_size-1):  # creates x and y indices to the grid, so -1
+        print(f'Examining row {y+1}')
+        for x in range(grid_size-1):
 
             # loop again for every possible square size with this origin
-            #TODO  which is what...? 
-            if x == 0 and y == 0:
-                cell_power = calc_power(x,y, 3)
+            #TODO  which is what...?
+            # 
+            x_dist = grid_size - x
+            y_dist = grid_size - y
+            num_squares = min(y_dist, x_dist) 
 
-            # due to 0 indexing, x,y is actually the 'top left' of a 1 index
-            if cell_power > high_power:
-                high_power = cell_power
-                high_coords = x,y
+            for square_size in range(num_squares):  # 0 to the biggest square
+                cell_power = calc_power(x,y,square_size)
+
+                if cell_power > high_power:
+                    high_power = cell_power
+                    high_coords = x,y
+                    high_size = square_size
+        
+        
             
-print(f'High power is {high_power} at {high_coords}')
+print(f'High power is {high_power} at {high_coords}, {high_size}')
