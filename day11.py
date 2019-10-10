@@ -25,7 +25,7 @@ def calc_power(x, y, size):
 
     cell_power = grid[y][x]
     if size > 0:
-        for offset in range(size):
+        for offset in range(1, size):
             # print(f'Point {x},{y}, power={cell_power}, offset={offset}')
             cell_power += sum(grid[y+offset][x:x+size])
 
@@ -34,7 +34,8 @@ def calc_power(x, y, size):
     return cell_power
 
 if __name__ == "__main__":
-    
+    import time
+
     serial = 42
     grid_size = 300
     # create 300x300 grid with 'rack id' as each cell value
@@ -46,13 +47,11 @@ if __name__ == "__main__":
     high_power = 0
     high_coords = 0,0
     
+    start_time = time.time()
     for y in range(grid_size-1):  # creates x and y indices to the grid, so -1
         print(f'Examining row {y+1}')
         for x in range(grid_size-1):
 
-            # loop again for every possible square size with this origin
-            #TODO  which is what...?
-            # 
             x_dist = grid_size - x
             y_dist = grid_size - y
             num_squares = min(y_dist, x_dist) 
@@ -62,9 +61,10 @@ if __name__ == "__main__":
 
                 if cell_power > high_power:
                     high_power = cell_power
-                    high_coords = x,y
+                    high_coords = x+1,y+1
                     high_size = square_size
-        
+    duration = time.time() - start_time
         
             
 print(f'High power is {high_power} at {high_coords}, {high_size}')
+print(f'Total time took {duration} seconds')
