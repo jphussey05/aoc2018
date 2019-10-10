@@ -15,40 +15,52 @@ def populate_grid():
 
 
 def calc_power(x, y, size):
-    cell_power = grid[y][x]  # center
-    cell_power += grid[y-1][x+1]  # top right
-    cell_power += grid[y][x+1]  # right
-    cell_power += grid[y+1][x+1]  # bot right
-    cell_power += grid[y+1][x]  # bot
-    cell_power += grid[y+1][x-1]  # bot left
-    cell_power += grid[y][x-1]  # left
-    cell_power += grid[y-1][x-1]  # top left
-    cell_power += grid[y-1][x]  # top
+
+    # x, y is the top left of the square
+    # size is how big the square is
+
+    cell_power = 0
+    if size > 0:
+        for offset in range(size):
+            # print(f'Point {x},{y}, power={cell_power}, offset={offset}')
+            cell_power += sum(grid[y+offset][x:x+size])
+    else:
+        cell_power = grid[y][x]
 
     return cell_power
 
-if __name__ == "__main__":
-    
-    serial = 6042
 
+if __name__ == "__main__":
+    import time
+
+    serial = 6042
+    grid_size = 300
     # create 300x300 grid with 'rack id' as each cell value
-    # rack id is x coordinate (starts at 1, not 0) plus 10
-    grid = [[x + 11 for x in range(300)] for y in range (300)]
+    grid = [[x + 11 for x in range(grid_size)] for y in range (grid_size)]
 
     populate_grid()
 
     high_power = 0
     high_coords = 0,0
     
-    for y in range(1, 299):
-        for x in range(1,299):
+    start_time = time.time()
+    for y in range(grid_size-1):  # creates x and y indices to the grid, so -1
+        print(f'Examining row {y+1}')
+        for x in range(grid_size-1):
 
+            x_dist = grid_size - x
+            y_dist = grid_size - y
+            num_squares = min(y_dist, x_dist) 
 
-            cell_power = calc_power(x,y, 3)
+            for square_size in range(num_squares):  # 0 to the biggest square
+                cell_power = calc_power(x,y,square_size)
 
-            # due to 0 indexing, x,y is actually the 'top left' of a 1 index
-            if cell_power > high_power:
-                high_power = cell_power
-                high_coords = x,y
+                if cell_power > high_power:
+                    high_power = cell_power
+                    high_coords = x+1,y+1
+                    high_size = square_size
+    duration = time.time() - start_time
+        
             
-print(f'High power is {high_power} at {high_coords}')
+print(f'High power is {high_power} at {high_coords}, {high_size}')
+print(f'Total time took {duration} seconds')
