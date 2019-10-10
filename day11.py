@@ -1,7 +1,3 @@
-'''
-new branch for part 2 that I may trash if it doesn't work
-'''
-
 def populate_grid():
     for y, row in enumerate(grid):
         for x, rack_id in enumerate(row):
@@ -23,23 +19,23 @@ def calc_power(x, y, size):
     # x, y is the top left of the square
     # size is how big the square is
 
-    cell_power = grid[y][x]
+    cell_power = 0
     if size > 0:
-        for offset in range(1, size):
+        for offset in range(size):
             # print(f'Point {x},{y}, power={cell_power}, offset={offset}')
             cell_power += sum(grid[y+offset][x:x+size])
-
-    # print(f'Final power for {x},{y} with {size}x{size} is {cell_power}')
+    else:
+        cell_power = grid[y][x]
 
     return cell_power
+
 
 if __name__ == "__main__":
     import time
 
-    serial = 42
+    serial = 6042
     grid_size = 300
     # create 300x300 grid with 'rack id' as each cell value
-    # rack id is x coordinate (starts at 1, not 0) plus 10
     grid = [[x + 11 for x in range(grid_size)] for y in range (grid_size)]
 
     populate_grid()
