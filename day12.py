@@ -1,3 +1,5 @@
+from pprint import pprint
+
 with open('day12.txt') as fin:
     contents = fin.readlines()
 
@@ -11,4 +13,11 @@ for line in contents[2:]:
     line = line.strip()
     spread_dict[line[:5]] = line[-1]
 
-print(spread_dict)
+pprint(spread_dict)
+
+zero_index = 0
+positives = initial
+negatives = '..'
+
+for char in initial:
+    print(char)
